@@ -1,0 +1,26 @@
+{
+  "name": "czernexreach-testpilot",
+  "version": "1.0.0",
+  "description": "Lightweight QA tool for testing websites with Playwright and generating simple test reports.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/**/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Czernex1989/CzernexReach-TestPilot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Czernex1989/CzernexReach-TestPilot/issues"
+  },
+  "homepage": "https://github.com/Czernex1989/CzernexReach-TestPilot#readme",
+  "dependencies": {
+    "express": "^5.2.1",
+    "playwright": "^1.63.0"
+  }
+}

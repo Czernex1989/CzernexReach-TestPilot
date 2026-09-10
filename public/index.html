@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CzernexReach TestPilot</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="header">
+    <h1>CzernexReach <span>TestPilot</span></h1>
+    <p class="subtitle">Automatyczny szybki test QA dla dowolnej strony WWW</p>
+  </header>
+
+  <main class="container">
+    <form id="test-form" class="test-form">
+      <input
+        id="url-input"
+        type="text"
+        name="url"
+        placeholder="np. example.com"
+        autocomplete="off"
+        required
+      />
+      <button type="submit" id="run-button">Run Test</button>
+    </form>
+
+    <section id="result" class="result" hidden></section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
