@@ -15,6 +15,12 @@ const STATUS_LABELS = {
   FAIL: 'FAIL — wykryto problem do naprawy przed publikacją lub oddaniem klientowi',
 };
 
+const MOBILE_STATUS_LABELS = {
+  PASS: 'Mobile PASS — podstawowe kontrole mobilne są OK',
+  WARNING: 'Mobile WARNING — widok mobilny wymaga uwagi',
+  FAIL: 'Mobile FAIL — strona nie ładuje się w widoku mobilnym',
+};
+
 function renderLoading() {
   resultEl.hidden = false;
   resultEl.innerHTML = '<p class="loading">Sprawdzam gotowość strony do publikacji…</p>';
@@ -51,6 +57,8 @@ function renderResult(data) {
     ? `<div class="result-screenshot"><img src="/screenshots/${encodeURIComponent(data.screenshot)}" alt="Zrzut ekranu błędu" /></div>`
     : '';
 
+  const mobileHtml = renderMobileHtml(data.mobile);
+
   const statusLabel = STATUS_LABELS[data.status] || data.status;
 
   resultEl.hidden = false;
@@ -64,6 +72,44 @@ function renderResult(data) {
     </div>
     ${issuesHtml}
     ${screenshotHtml}
+    ${mobileHtml}
+  `;
+}
+
+function renderMobileHtml(mobile) {
+  if (!mobile) return '';
+
+  const mobileIssues = [];
+  if (mobile.error) {
+    mobileIssues.push(`Strona nie załadowała się w widoku mobilnym: ${mobile.error}`);
+  }
+  if (mobile.httpStatus !== null && mobile.httpStatus >= 400) {
+    mobileIssues.push(`Serwer zwrócił status HTTP ${mobile.httpStatus} w widoku mobilnym`);
+  }
+  if (mobile.status !== 'FAIL') {
+    if (!mobile.hasViewportMeta) {
+      mobileIssues.push('Brak poprawnego meta viewport (width=device-width)');
+    }
+    if (mobile.hasHorizontalOverflow) {
+      mobileIssues.push('Treść wychodzi poza szerokość ekranu (horizontal overflow)');
+    }
+  }
+
+  const mobileStatusLabel = MOBILE_STATUS_LABELS[mobile.status] || mobile.status;
+  const mobileIssuesHtml = mobileIssues.length
+    ? `<ul>${mobileIssues.map((i) => `<li>${escapeHtml(i)}</li>`).join('')}</ul>`
+    : '';
+  const mobileScreenshotHtml = mobile.screenshot
+    ? `<div class="result-screenshot"><img src="/screenshots/${encodeURIComponent(mobile.screenshot)}" alt="Zrzut ekranu widoku mobilnego" /></div>`
+    : '';
+
+  return `
+    <div class="result-issues">
+      <h3>Mobile check</h3>
+      <span class="result-status ${mobile.status}">${escapeHtml(mobileStatusLabel)}</span>
+      ${mobileIssuesHtml}
+      ${mobileScreenshotHtml}
+    </div>
   `;
 }
 

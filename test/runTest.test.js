@@ -14,7 +14,9 @@ function startTestServer(html) {
 }
 
 test('runTest reports PASS for a clean page', async () => {
-  const server = await startTestServer('<html><head><title>Hello</title></head><body>OK</body></html>');
+  const server = await startTestServer(
+    '<html><head><title>Hello</title><meta name="viewport" content="width=device-width, initial-scale=1"></head><body>OK</body></html>'
+  );
   const { port } = server.address();
 
   try {
@@ -24,6 +26,10 @@ test('runTest reports PASS for a clean page', async () => {
     assert.equal(result.title, 'Hello');
     assert.equal(result.consoleErrors.length, 0);
     assert.equal(result.screenshot, null);
+    assert.equal(result.mobile.status, 'PASS');
+    assert.equal(result.mobile.hasViewportMeta, true);
+    assert.equal(result.mobile.hasHorizontalOverflow, false);
+    assert.ok(result.mobile.screenshot);
   } finally {
     server.close();
   }
@@ -33,4 +39,20 @@ test('runTest reports FAIL and saves a screenshot when the page cannot be reache
   const result = await runTest('http://127.0.0.1:1');
   assert.equal(result.status, 'FAIL');
   assert.ok(result.error);
+});
+
+test('runTest reports overall WARNING (not FAIL) when the only problem is a missing mobile viewport', async () => {
+  const server = await startTestServer(
+    '<html><head><title>No Viewport</title></head><body>OK</body></html>'
+  );
+  const { port } = server.address();
+
+  try {
+    const result = await runTest(`http://127.0.0.1:${port}`);
+    assert.equal(result.status, 'WARNING');
+    assert.equal(result.mobile.status, 'WARNING');
+    assert.equal(result.mobile.hasViewportMeta, false);
+  } finally {
+    server.close();
+  }
 });
