@@ -1,7 +1,7 @@
 {
   "name": "czernexreach-testpilot",
   "version": "1.0.0",
-  "description": "Lightweight QA tool for testing websites with Playwright and generating simple test reports.",
+  "description": "Quick pre-flight QA check for websites before publishing or handing them off to a client.",
   "main": "index.js",
   "scripts": {
     "start": "node server.js",

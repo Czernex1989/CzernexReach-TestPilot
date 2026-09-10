@@ -19,7 +19,7 @@ app.post('/api/test', async (req, res) => {
     const result = await runTest(url);
     res.json(result);
   } catch (err) {
-    res.status(500).json({ error: err.message || 'Nie udało się uruchomić testu.' });
+    res.status(500).json({ error: err.message || 'Nie udało się przeprowadzić kontroli.' });
   }
 });
 
